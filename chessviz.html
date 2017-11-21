@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html><head>
+<title>ChessViz</title>
+<style type="text/css">
+*{margin:0;padding:0;}
+body{
+ background:#777;
+}
+#ChessVizCanvas{
+ background:#fff;
+ border:1px solid #000;
+ margin: 100px auto;
+ width:720px;
+ height:720px;
+ display:block;
+}
+</style>
+<script type="text/javascript" src="chessviz.js"></script>
+<script type="text/javascript">
+var board = new ChessBoard({});
+//board.dump();
+
+function draw(ctx)
+{
+    board.drawTiles(ctx);
+    board.drawMovesForAll(ctx);
+    board.drawPieces(ctx);
+}
+function bodyOnload()
+{
+    var canvas = document.getElementById('ChessVizCanvas');
+    canvas.onmousemove = ChessVizOnMouseMove;
+
+    var ctx = canvas.getContext('2d');
+    draw(ctx);
+}
+function ChessVizOnMouseMove(e)
+{
+    var rect = this.getBoundingClientRect();
+    //console.log(rect);
+    var mouseX = e.clientX - rect.left;
+    var mouseY = e.clientY - rect.top;
+    //console.log(mouseX + " x " + mouseY);
+
+    var mouseOverCol = Math.floor(mouseX / board.tileSize);
+    var mouseOverRow = Math.floor(mouseY / board.tileSize);
+
+    if(mouseOverCol != board.mouseOverCol || mouseOverRow != board.mouseOverRow)
+    {
+        console.log("MouseOver col=" + mouseOverCol + ", row=" + mouseOverRow);
+        board.mouseOverCol = mouseOverCol;
+        board.mouseOverRow = mouseOverRow;
+        draw(this.getContext('2d'));
+    }
+}
+</script>
+</head><body onload="bodyOnload()">
+<canvas id="ChessVizCanvas" width="720" height="720" onmousemove="ChessVizOnMouseMove" />
+</body></html>
